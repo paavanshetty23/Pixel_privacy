@@ -130,7 +130,3 @@ pip install -r requirements.txt
 
 4. Now, you can run the code and it will print out the processed information.
 
-## Authors
-
-- **[Anuj Saini](https://www.linkedin.com/in/anuj-saini-7230a0257/)**
->>>>>>> 30ec38f (Save local changes before rebase)
