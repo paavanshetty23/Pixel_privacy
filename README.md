@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Pixel_privacy
 
 A Python-based utility for detecting and monitoring Personally Identifiable Information (PII) on public websites. This project includes web scraping, data processing, and automated monitoring capabilities.
@@ -33,26 +32,56 @@ python main.py
 
 ### Monitor Websites for PII
 
+## Using GNU Make and Docker
 ```bash
-python monitor.py
+cd backend && make
+```
+Now in another terminal instance
+```bash
+cd dummy-website && make
+```
+## Using plain Docker and python3 http.server
+```bash
+cd backend/
+docker build . -t pii-backend
+docker run --network host pii-backend
+```
+Now in another terminal instance
+```bash
+cd dummy-website
+python3 -m http.server 5173
 ```
 - Periodically scans websites and sends alerts for newly detected PII.
+- Serves a HTTP GET endpoint at `http://localhost:5000/api/get-exposed-websites?name=<name>&pii-type=<pii-type>&pii-value=<pii-value>` that responds to the given request with the **top 5** nearest neighbours to the search term.
 
-## Output Format
-
-The output JSON contains a list of detected PII instances with details such as type, location, and timestamp.
-
-Example:
-```json
-[
-  {
-    "type": "SSN",
-    "value": "123-45-6789",
-    "url": "http://example.com",
-    "timestamp": "2025-05-13T10:00:00Z"
-  },
-  ...
-]
+## Output Example
+```jsonc
+{
+    "neighbors": [                                             // List of 5 nearest neighbors (at max).
+        {
+            "data": "A-1234567",                              // The pii-value matched
+            "distance": 0.0,                                 // The distance from the query.
+            "pii_type": "PASSPORT",                          // The pii_type matched for.
+            "timestamp": "2025-05-24T10:03:08.380339",      //  The timestamp of the scrape.
+            "website": "http://localhost:5173/index.html"   // The website this data was found in.
+        },
+        {
+            "data": "1234 5678 9012",
+            "distance": 21.859962463378906,
+            "pii_type": "AADHAR",
+            "timestamp": "2025-05-24T10:03:08.373483",
+            "website": "http://localhost:5173/index.html"
+        },
+        {
+            "data": "ABCDE1234F",
+            "distance": 24.396194458007812,
+            "pii_type": "PAN",
+            "timestamp": "2025-05-24T10:03:08.378412",
+            "website": "http://localhost:5173/index.html"
+        }
+    ],
+    "query": "PASSPORT number A-1234567"                    // The query string being embedded to search for.
+}
 ```
 
 ## Notes
