@@ -1,0 +1,8 @@
+Flask 
+requests
+APScheduler
+chromadb
+numpy
+scipy
+gensim
+Cython
