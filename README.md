@@ -30,9 +30,9 @@ python main.py
 - Processes websites and detects PII.
 - Outputs results to `pii_detection_results.json`.
 
-### Monitor Websites for PII
+## Monitor Websites for PII
 
-#### Using GNU Make and Docker
+### Using GNU Make and Docker
 ```bash
 cd backend && make
 ```
@@ -40,7 +40,7 @@ Now in another terminal instance
 ```bash
 cd dummy-website && make
 ```
-#### Using plain Docker and python3 http.server
+### Using plain Docker and python3 http.server
 ```bash
 cd backend/
 docker build . -t pii-backend
