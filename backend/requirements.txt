@@ -1,0 +1,9 @@
+Flask
+apscheduler
+chromadb
+numpy
+gensim
+beautifulsoup4
+selenium
+webdriver-manager
+chromedriver-autoinstaller
