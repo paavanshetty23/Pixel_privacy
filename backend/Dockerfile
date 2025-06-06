@@ -6,6 +6,10 @@ RUN pip install -r requirements.txt
 
 RUN python -c "import gensim.downloader as api; api.load('glove-wiki-gigaword-300')"
 
+RUN apt-get update && \
+    apt-get install -y chromium chromium-driver && \
+    rm -rf /var/lib/apt/lists/*
+
 COPY . /app
 WORKDIR /app
 

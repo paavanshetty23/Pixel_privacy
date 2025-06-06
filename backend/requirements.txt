@@ -1,8 +1,9 @@
-Flask 
-requests
-APScheduler
+Flask
+apscheduler
 chromadb
 numpy
-scipy
 gensim
-Cython
+beautifulsoup4
+selenium
+webdriver-manager
+chromedriver-autoinstaller

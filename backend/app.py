@@ -8,8 +8,13 @@ from apscheduler.schedulers.background import BackgroundScheduler
 import chromadb
 from chromadb.config import Settings
 import numpy as np
-from gensim.models.keyedvectors import KeyedVectors
 from gensim.downloader import load as gensim_load
+from bs4 import BeautifulSoup
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service as ChromeService
+from webdriver_manager.chrome import ChromeDriverManager
+import chromedriver_autoinstaller
 
 # Initialize Flask
 app = Flask(__name__)
@@ -52,15 +57,36 @@ def load_websites():
     print(f"[LOAD] Loaded {len(sites)} websites from list.")
     return sites
 
+def get_rendered_html(url):
+    try:
+        chromedriver_autoinstaller.install()
+        chrome_options = Options()
+        chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--no-sandbox")
+        chrome_options.add_argument("--disable-dev-shm-usage")
+        chrome_options.binary_location = "/usr/bin/chromium"
+        driver = webdriver.Chrome(options=chrome_options)
+        driver.get(url)
+        html = driver.page_source
+        driver.quit()
+        return html
+    except Exception as e:
+        print(f"[ERROR] Selenium rendering failed for {url}: {e}")
+        return ""
+
 def scrape_and_store():
     websites = load_websites()
     for url in websites:
         try:
-            print(f"[SCRAPE] Requesting {url}")
-            resp = requests.get(url, timeout=10)
-            resp.raise_for_status()
-            text = resp.text
+            print(f"[SCRAPE] Rendering {url}")
+            rendered_html = get_rendered_html(url)
+            if not rendered_html:
+                continue
+            soup = BeautifulSoup(rendered_html, 'html.parser')
+            text = soup.get_text()
             print(f"[SCRAPE] Success - {url} returned {len(text)} characters")
+
+            print("[DEBUG] Beginning regex search for known PII formats...")
 
             findings = {
                 'AADHAR': set(AADHAR_REGEX.findall(text)),
@@ -72,7 +98,7 @@ def scrape_and_store():
                 print(f"[PII] Found {len(values)} items for {pii_type}")
                 for value in values:
                     record_id = str(uuid.uuid4())
-                    embedding = embed_text(f"{pii_type} number {value}")
+                    embedding = embed_text(f"{pii_type} {value}")
                     if np.linalg.norm(embedding) == 0:
                         print(f"[SKIP] Zero vector for {pii_type}: {value}")
                         continue
@@ -111,7 +137,7 @@ def get_exposed_websites():
     if not pii_value:
         return jsonify({'error': 'Missing query parameter: pii-value'}), 400
 
-    query_text = f"{pii_type} number {pii_value}"
+    query_text = f"{pii_type} {pii_value}"
     query_embedding = embed_text(query_text)
     app.logger.info(f"[QUERY] Embedding for: {query_text}, norm={np.linalg.norm(query_embedding):.2f}")
 
