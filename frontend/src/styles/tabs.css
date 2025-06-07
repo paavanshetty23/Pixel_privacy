@@ -1,0 +1,205 @@
+.pii-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 20px;
+}
+
+.pii-form input,
+.pii-form select {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #334155;
+  background-color: #0f172a;
+  color: #e2e8f0;
+  width: 100%;
+}
+
+.pii-form label {
+  color: #e2e8f0;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.pii-form button {
+  font-size: large;
+  width: 75%;
+  margin-top: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 10px;
+  background-color: #0bab4a;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  color: white;
+  transition: background 0.3s ease;
+}
+
+.pii-form button:hover {
+  background-color: #057d33;
+}
+
+.pii-form button[type="button"] {
+  background-color: #3b82f6;
+  width: auto;
+  margin: 5px;
+  padding: 5px 15px;
+}
+
+.pii-form button[type="button"]:hover {
+  background-color: #2563eb;
+}
+
+.result-box {
+  margin: 20px auto;
+  width: 90%;
+  background-color: #0f172a;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.result-box h3 {
+  font-size: larger;
+  margin-bottom: 10px;
+  color: #e2e8f0;
+}
+
+.result-box ul {
+  list-style-type: none;
+  padding-left: 0;
+  line-height: 200%;
+}
+
+.result-box a {
+  color: #facc15;
+  text-decoration: none;
+}
+
+.result-box a:hover {
+  text-decoration: underline;
+}
+
+.pii-field-group {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 15px;
+  width: 100%;
+}
+
+.remove-btn {
+  background-color: #dc2626 !important;
+  width: 36px !important;
+  height: 36px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50% !important;
+}
+
+.remove-btn:hover {
+  background-color: #b91c1c !important;
+}
+
+.Tabs {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 2rem;
+}
+
+ul.nav {
+  width: 100%;
+  margin: 0 auto 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 0;
+  background: rgba(15, 23, 42, 0.5);
+}
+
+ul.nav li {
+  width: 33.33%;
+  padding: 1rem;
+  list-style: none;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #cbd5e1;
+  border-bottom: 2px solid transparent;
+}
+
+ul.nav li:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+ul.nav li.active {
+  border-bottom: 2px solid #60a5fa;
+  color: #60a5fa;
+  background: rgba(96, 165, 250, 0.1);
+}
+
+.TabContent {
+  padding: 20px;
+  width: 100%;
+  height: 100%;
+  display: none;
+}
+
+.TabContent.active {
+  display: block;
+}
+
+.upload-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  border: 2px dashed rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.3);
+  transition: all 0.3s ease;
+}
+
+.upload-container:hover {
+  border-color: #60a5fa;
+  background: rgba(15, 23, 42, 0.5);
+}
+
+.upload-button {
+  padding: 12px 24px;
+  background: #60a5fa;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.upload-button:hover {
+  background: #3b82f6;
+  transform: translateY(-1px);
+}
+
+.result-container {
+  margin-top: 2rem;
+  padding: 20px;
+  background: rgba(15, 23, 42, 0.3);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Navigation moved to header; default Tabs nav removed */

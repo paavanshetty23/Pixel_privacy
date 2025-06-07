@@ -163,4 +163,4 @@ def get_exposed_websites():
 
 if __name__ == '__main__':
     schedule_scraping()
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5040)

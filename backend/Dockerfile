@@ -13,6 +13,6 @@ RUN apt-get update && \
 COPY . /app
 WORKDIR /app
 
-EXPOSE 5000
+EXPOSE 5040
 
 CMD ["python", "app.py"]
