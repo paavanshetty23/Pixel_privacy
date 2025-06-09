@@ -5,14 +5,54 @@ function SingleSearch() {
   const [piiType, setPiiType] = useState('');
   const [piiValue, setPiiValue] = useState('');
   const [websites, setWebsites] = useState([]);
+  const [searchResults, setSearchResults] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [searchAttempted, setSearchAttempted] = useState(false);
 
-  const handleSearch = (e) => {
+  const handlePiiValueChange = (e) => {
+    setPiiValue(e.target.value);
+  };
+
+  const handleSearch = async (e) => {
     e.preventDefault();
-    setWebsites([
-      'https://leaksite1.com',
-      'https://sample-data.net',
-      'https://testpii.io',
-    ]);
+    setIsLoading(true);
+    setSearchAttempted(true);
+    
+    try {
+      const response = await fetch('/api/search_pii', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          piiType: piiType,
+          piiValue: piiValue,
+          name: name
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setSearchResults(data);
+        // Extract websites from neighbors for backward compatibility
+        if (data.neighbors) {
+          const extractedWebsites = data.neighbors.map(item => item.website);
+          setWebsites(extractedWebsites);
+        } else {
+          setWebsites([]);
+        }
+      } else {
+        console.error('Search failed');
+        setWebsites([]);
+        setSearchResults(null);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setWebsites([]);
+      setSearchResults(null);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -94,25 +134,27 @@ function SingleSearch() {
             )}
           </button>
         </div>
-        <button type="submit">Search</button>
-        {websites.length > 0 && (
+      </form>
+
+      {/* Simple website results display */}
+      {searchAttempted && (
+        websites.length > 0 ? (
           <div className="result-box">
             <h3>Exposed Websites:</h3>
             <ul>
               {websites.map((site, idx) => (
-                <li key={idx}><a href={site} target="_blank" rel="noopener noreferrer">{site}</a></li>
+                <li key={idx}>
+                  <a href={site} target="_blank" rel="noopener noreferrer">{site}</a>
+                </li>
               ))}
             </ul>
           </div>
         ) : (
-          // Optional: Message when no websites are found and no error occurred
-          // Check if a search has been attempted to avoid showing this on initial load
-          // For simplicity, this example shows it if websites array is empty after a search attempt might have occurred.
-          // You might need a separate state variable like `searchAttempted` for more precise control.
           <div className="no-websites-found">No exposed websites found for this query.</div>
-        )}
-      </form>
+        )
+      )}
         
+      {/* Detailed search results */}
       {searchResults && (
         <div className="pii-results">
           <h3>Search Results</h3>
@@ -142,39 +184,39 @@ function SingleSearch() {
               {searchResults.neighbors.map((item, idx) => (
                 <div key={idx} className="result-card">
                   <div className="result-header">
-                    <span className={`pii-badge ${item.pii_type.toLowerCase()}`}>
-                      {item.pii_type}
+                    <span className={`pii-badge ${item.pii_type ? item.pii_type.toLowerCase() : 'unknown'}`}>
+                      {item.pii_type || 'Unknown'}
                     </span>
                     <span className="result-score">
-                      Match Score: <strong>{((1 - item.distance) * 100).toFixed(2)}%</strong>
+                      Match Score: <strong>{item.distance ? ((1 - item.distance) * 100).toFixed(2) : 'N/A'}%</strong>
                     </span>
                   </div>
                   <div className="result-body">
                     <p>
                       <strong>Data Found:</strong> 
-                      <span className="highlight-data">{item.data}</span>
+                      <span className="highlight-data">{item.data || 'N/A'}</span>
                     </p>
                     <p>
                       <strong>Website:</strong> 
                       <a 
-                        href={item.website.startsWith('http') ? item.website : `https://${item.website}`} 
+                        href={item.website && item.website.startsWith('http') ? item.website : `https://${item.website || ''}`} 
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="website-link"
                       >
-                        {item.website}
+                        {item.website || 'Unknown'}
                       </a>
                     </p>
                     <p>
                       <strong>Detected On:</strong> 
                       <span className="timestamp">
-                        {new Date(item.timestamp).toLocaleDateString('en-US', { 
+                        {item.timestamp ? new Date(item.timestamp).toLocaleDateString('en-US', { 
                           year: 'numeric', 
                           month: 'long', 
                           day: 'numeric',
                           hour: '2-digit',
                           minute: '2-digit'
-                        })}
+                        }) : 'Unknown'}
                       </span>
                     </p>
                   </div>
