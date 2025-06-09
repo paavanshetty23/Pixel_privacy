@@ -31,6 +31,8 @@ image_extensions = {'.jpg', '.jpeg', '.png'}
 def process_dataset_images():
     results = {}
     image_files = [f for f in os.listdir(data_dir) if os.path.splitext(f)[1].lower() in image_extensions]
+    # Limit to first 50 images
+    image_files = image_files[:50]
     total = len(image_files)
     for idx, filename in enumerate(image_files, start=1):
         image_path = os.path.join(data_dir, filename)
