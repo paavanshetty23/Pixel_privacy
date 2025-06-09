@@ -1,63 +1,21 @@
 import React, { useState } from 'react';
-import '../styles/piiResults.css';
 
 function SingleSearch() {
   const [name, setName] = useState('');
   const [piiType, setPiiType] = useState('');
   const [piiValue, setPiiValue] = useState('');
-  const [searchResults, setSearchResults] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [websites, setWebsites] = useState([]);
 
-  // Helper function to format PII value based on type
-  const formatPiiValue = (type, value) => {
-    if (!value) return '';
-    
-    switch(type) {
-      case 'AADHAR':
-        // Format: 1234 5678 9012
-        return value.replace(/\s/g, '').replace(/(\d{4})(?=\d)/g, '$1 ').trim();
-      case 'PAN':
-        // Format: ABCDE1234F
-        return value.toUpperCase();
-      case 'PASSPORT':
-        // Format: A-1234567
-        return value.toUpperCase().replace(/^([A-Z])(\d{7})$/, '$1-$2');
-      default:
-        return value;
-    }
-  };
-  
-  // Handle PII input change with formatting
-  const handlePiiValueChange = (e) => {
-    const formattedValue = formatPiiValue(piiType, e.target.value);
-    setPiiValue(formattedValue);
-  };
-
-  const handleSearch = async (e) => {
+  const handleSearch = (e) => {
     e.preventDefault();
-    setIsLoading(true);
-    setError(null);
-    
-    try {
-      // Make API call to the backend with properly formatted parameters
-      const response = await fetch(`/api/get-exposed-websites?name=${encodeURIComponent(name)}&pii-type=${encodeURIComponent(piiType)}&pii-value=${encodeURIComponent(piiValue)}`);
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Search failed. Please try again.');
-      }
-      
-      const data = await response.json();
-      console.log('Search results:', data);
-      setSearchResults(data);
-    } catch (err) {
-      console.error('Search error:', err);
-      setError(err.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };  return (
+    setWebsites([
+      'https://leaksite1.com',
+      'https://sample-data.net',
+      'https://testpii.io',
+    ]);
+  };
+
+  return (
     <div className="pii-search-container">
       <div className="pii-search-header">
         <h2>PII Exposure Search</h2>
@@ -136,11 +94,22 @@ function SingleSearch() {
             )}
           </button>
         </div>
-        
-        {error && (
-          <div className="error-message">
-            <p><strong>Error:</strong> {error}</p>
+        <button type="submit">Search</button>
+        {websites.length > 0 && (
+          <div className="result-box">
+            <h3>Exposed Websites:</h3>
+            <ul>
+              {websites.map((site, idx) => (
+                <li key={idx}><a href={site} target="_blank" rel="noopener noreferrer">{site}</a></li>
+              ))}
+            </ul>
           </div>
+        ) : (
+          // Optional: Message when no websites are found and no error occurred
+          // Check if a search has been attempted to avoid showing this on initial load
+          // For simplicity, this example shows it if websites array is empty after a search attempt might have occurred.
+          // You might need a separate state variable like `searchAttempted` for more precise control.
+          <div className="no-websites-found">No exposed websites found for this query.</div>
         )}
       </form>
         
