@@ -1,0 +1,185 @@
+/* General container for search results */
+.result-box {
+  margin-top: 20px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.result-box h3,
+.result-item h4 {
+  color: #333;
+  margin-top: 0;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 8px;
+}
+
+/* List of exposed websites */
+.exposed-list {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.exposed-list-item {
+  padding: 8px 0;
+  border-bottom: 1px dashed #eee;
+}
+
+.exposed-list-item:last-child {
+  border-bottom: none;
+}
+
+.exposed-link {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.exposed-link:hover {
+  text-decoration: underline;
+  color: #0056b3;
+}
+
+/* Specific to MultiSearch results */
+.multi-result-box {
+  margin-top: 25px;
+}
+
+.result-item {
+  margin-bottom: 20px;
+  padding: 15px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  background-color: #fff;
+}
+
+.result-item:last-child {
+  margin-bottom: 0;
+}
+
+.result-query-title { /* For the h4 in MultiSearch */
+  font-size: 1.1em;
+  color: #555;
+}
+
+/* Error and no-results messages */
+.error-message {
+  color: #d9534f; /* Bootstrap danger color */
+  font-weight: bold;
+  padding: 10px;
+  background-color: #f2dede;
+  border: 1px solid #ebccd1;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+.no-results-message {
+  color: #777;
+  font-style: italic;
+  padding: 10px;
+  background-color: #f0f0f0;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+/* Styling for the form itself */
+.pii-search-container {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.1);
+}
+
+.pii-form div:not(.result-box):not(.multi-result-box):not(.result-item):not(.query-group) {
+  margin-bottom: 15px;
+}
+
+.pii-form label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #333;
+}
+
+.pii-form select,
+.pii-form input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.pii-form button[type="submit"],
+.pii-form button[type="button"] {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1em;
+  margin-right: 10px;
+  margin-top: 10px; /* Added margin-top for spacing */
+}
+
+.pii-form button[type="submit"]:hover,
+.pii-form button[type="button"]:hover {
+  background-color: #0056b3;
+}
+
+.pii-form .remove-query-btn {
+  background-color: #dc3545;
+  margin-left: 10px;
+  margin-top: 0; /* Reset margin-top for inline button */
+}
+.pii-form .remove-query-btn:hover {
+  background-color: #c82333;
+}
+
+.pii-form .add-query-btn {
+  background-color: #28a745;
+  display: inline-block; /* Make it behave well with other buttons */
+  width: auto; /* Override full width if not desired */
+}
+.pii-form .add-query-btn:hover {
+  background-color: #218838;
+}
+
+.query-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  background-color: #fdfdfd;
+}
+
+.query-group select,
+.query-group input[type="text"] {
+  flex-grow: 1;
+  margin-bottom: 0; /* Reset margin from general input style */
+}
+.query-group button.remove-query-btn {
+  flex-shrink: 0; /* Prevent button from shrinking */
+  margin-top: 0;
+}
+
+/* Message when no websites are found and no error occurred */
+.no-websites-found {
+    padding: 10px;
+    margin-top: 15px;
+    background-color: #e9ecef;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    color: #495057;
+    text-align: center;
+}
