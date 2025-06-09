@@ -7,3 +7,6 @@ beautifulsoup4
 selenium
 webdriver-manager
 chromedriver-autoinstaller
+pytesseract
+Pillow
+opencv-python
