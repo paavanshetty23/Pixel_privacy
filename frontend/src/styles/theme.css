@@ -1,0 +1,117 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  background: #0F172A; /* Dark Navy Blue - Primary Background */
+  color: #F8FAFC; /* Very light gray - Primary Text */
+  font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+}
+.app-bg {
+  min-height: 100vh;
+  background-color: #0a192f;
+  display: flex;
+  flex-direction: column;
+}
+.app-header {
+  width: 100%;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+}
+.app-logo {
+  height: 120px;
+  width: auto;
+  margin-right: 2rem;
+}
+.container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  margin-top: 0;
+}
+/* Center the Tabs container */
+.container > div {
+  width: 50%;
+  margin: 0 auto;
+}
+@media (max-width: 768px) {
+  .container > div {
+    width: 100%;
+    margin: 0 auto;
+  }
+}
+.main-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #3B82F6;
+  margin-bottom: 24px;
+  text-align: center;
+}
+.info-card {
+  background: #1E293B;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 32px;
+  box-shadow: 0 2px 12px rgba(15,23,42,0.15);
+}
+.desc-text {
+  color: #F8FAFC;
+  font-size: 1.1rem;
+  margin-bottom: 18px;
+  line-height: 1.7;
+}
+.get-started-btn {
+  background: #3B82F6;
+  color: #F8FAFC;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 32px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 18px;
+  transition: background 0.2s;
+}
+.get-started-btn:hover {
+  background: #2563EB;
+}
+.tabs-card {
+  background: #1E293B;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 12px rgba(15,23,42,0.15);
+}
+.tab-header {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.tab-btn {
+  background: #334155;
+  color: #F8FAFC;
+  border: none;
+  border-radius: 6px 6px 0 0;
+  padding: 10px 24px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.tab-btn.active, .tab-btn:hover {
+  background: #3B82F6;
+  color: #F8FAFC;
+}
+.tab-content {
+  background: #1E293B;
+  color: #F8FAFC;
+  padding: 18px;
+  border-radius: 0 0 8px 8px;
+  min-height: 80px;
+  font-size: 1.1rem;
+}
