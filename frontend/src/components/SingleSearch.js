@@ -149,7 +149,7 @@ function SingleSearch() {
                   {websites.map((site, idx) => (
                     <li key={idx} className="mb-1">
                       <i className="bi bi-link-45deg me-2"></i>
-                      <a href={site} target="_blank" rel="noopener noreferrer" className="text-dark">
+                      <a href={site} target="_blank" rel="noopener noreferrer" className="text-blue">
                         {site}
                       </a>
                     </li>
