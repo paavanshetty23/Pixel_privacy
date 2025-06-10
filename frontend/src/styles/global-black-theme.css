@@ -1,12 +1,12 @@
-/* Global Black Theme Override */
+/* Global Tokyo Night Theme Override */
 
 * {
   box-sizing: border-box;
 }
 
 body {
-  background-color: #000000 !important;
-  color: #FFFFFF !important;
+  background-color: #1a1b26 !important; /* Tokyo Night main background */
+  color: #a9b1d6 !important; /* Tokyo Night primary text */
 }
 
 /* Form elements */

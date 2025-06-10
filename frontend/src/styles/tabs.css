@@ -9,14 +9,14 @@
 .pii-form select {
   padding: 10px;
   border-radius: 6px;
-  border: 1px solid #334155;
-  background-color: #0f172a;
-  color: #e2e8f0;
+  border: 1px solid #414868; /* Tokyo Night border */
+  background-color: #1a1b26; /* Tokyo Night main background */
+  color: #a9b1d6; /* Tokyo Night primary text */
   width: 100%;
 }
 
 .pii-form label {
-  color: #e2e8f0;
+  color: #a9b1d6; /* Tokyo Night primary text */
   margin-bottom: 5px;
   font-weight: bold;
 }
@@ -28,34 +28,34 @@
   margin-left: auto;
   margin-right: auto;
   padding: 10px;
-  background-color: #0bab4a;
+  background-color: #9ece6a; /* Tokyo Night green accent */
   border: none;
   border-radius: 6px;
   font-weight: bold;
   cursor: pointer;
-  color: white;
+  color: #1a1b26; /* Tokyo Night dark background for contrast */
   transition: background 0.3s ease;
 }
 
 .pii-form button:hover {
-  background-color: #057d33;
+  background-color: #73daca; /* Tokyo Night teal accent on hover */
 }
 
 .pii-form button[type="button"] {
-  background-color: #3b82f6;
+  background-color: #7aa2f7; /* Tokyo Night blue accent */
   width: auto;
   margin: 5px;
   padding: 5px 15px;
 }
 
 .pii-form button[type="button"]:hover {
-  background-color: #2563eb;
+  background-color: #89b4fa; /* Lighter blue on hover */
 }
 
 .result-box {
   margin: 20px auto;
   width: 90%;
-  background-color: #0f172a;
+  background-color: #24283b; /* Tokyo Night surface background */
   padding: 15px;
   border-radius: 8px;
 }
@@ -63,7 +63,7 @@
 .result-box h3 {
   font-size: larger;
   margin-bottom: 10px;
-  color: #e2e8f0;
+  color: #a9b1d6; /* Tokyo Night primary text */
 }
 
 .result-box ul {
@@ -73,7 +73,7 @@
 }
 
 .result-box a {
-  color: #facc15;
+  color: #7aa2f7; /* Tokyo Night blue accent */
   text-decoration: none;
 }
 
@@ -90,7 +90,7 @@
 }
 
 .remove-btn {
-  background-color: #dc2626 !important;
+  background-color: #f7768e !important; /* Tokyo Night red accent */
   width: 36px !important;
   height: 36px !important;
   padding: 0 !important;
@@ -102,18 +102,18 @@
 }
 
 .remove-btn:hover {
-  background-color: #b91c1c !important;
+  background-color: #ff9e64 !important; /* Tokyo Night orange accent on hover */
 }
 
 .Tabs {
   width: 100%;
   max-width: 1000px;
   margin: 0 auto;
-  background: rgba(15, 23, 42, 0.7);
+  background: rgba(36, 40, 59, 0.7); /* Tokyo Night surface background with transparency */
   backdrop-filter: blur(10px);
   border-radius: 16px;
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(65, 72, 104, 0.3); /* Tokyo Night border with transparency */
   padding: 2rem;
 }
 
@@ -123,10 +123,10 @@ ul.nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(65, 72, 104, 0.3); /* Tokyo Night border */
   border-radius: 8px;
   padding: 0;
-  background: rgba(15, 23, 42, 0.5);
+  background: rgba(22, 22, 30, 0.5); /* Tokyo Night darker background */
 }
 
 ul.nav li {
@@ -136,18 +136,18 @@ ul.nav li {
   text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  color: #cbd5e1;
+  color: #9aa5ce; /* Tokyo Night secondary text */
   border-bottom: 2px solid transparent;
 }
 
 ul.nav li:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(122, 162, 247, 0.1); /* Tokyo Night blue accent with transparency */
 }
 
 ul.nav li.active {
-  border-bottom: 2px solid #60a5fa;
-  color: #60a5fa;
-  background: rgba(96, 165, 250, 0.1);
+  border-bottom: 2px solid #7aa2f7; /* Tokyo Night blue accent */
+  color: #7aa2f7; /* Tokyo Night blue accent */
+  background: rgba(122, 162, 247, 0.1);
 }
 
 .TabContent {
@@ -167,21 +167,21 @@ ul.nav li.active {
   align-items: center;
   gap: 20px;
   padding: 20px;
-  border: 2px dashed rgba(255, 255, 255, 0.2);
+  border: 2px dashed rgba(65, 72, 104, 0.4); /* Tokyo Night border */
   border-radius: 12px;
-  background: rgba(15, 23, 42, 0.3);
+  background: rgba(36, 40, 59, 0.3); /* Tokyo Night surface background */
   transition: all 0.3s ease;
 }
 
 .upload-container:hover {
-  border-color: #60a5fa;
-  background: rgba(15, 23, 42, 0.5);
+  border-color: #7aa2f7; /* Tokyo Night blue accent */
+  background: rgba(36, 40, 59, 0.5);
 }
 
 .upload-button {
   padding: 12px 24px;
-  background: #60a5fa;
-  color: white;
+  background: #7aa2f7; /* Tokyo Night blue accent */
+  color: #1a1b26; /* Tokyo Night dark background for contrast */
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -190,16 +190,16 @@ ul.nav li.active {
 }
 
 .upload-button:hover {
-  background: #3b82f6;
+  background: #89b4fa; /* Lighter blue on hover */
   transform: translateY(-1px);
 }
 
 .result-container {
   margin-top: 2rem;
   padding: 20px;
-  background: rgba(15, 23, 42, 0.3);
+  background: rgba(36, 40, 59, 0.3); /* Tokyo Night surface background */
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(65, 72, 104, 0.3); /* Tokyo Night border */
 }
 
 /* Navigation moved to header; default Tabs nav removed */

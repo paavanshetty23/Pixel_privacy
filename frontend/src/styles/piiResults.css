@@ -1,0 +1,73 @@
+/* Tokyo Night Theme - PII Results Specific Styles */
+
+.pii-results-container {
+  background-color: #24283b; /* Tokyo Night surface background */
+  border: 1px solid #414868; /* Tokyo Night border */
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px 0;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.pii-results-header {
+  color: #a9b1d6; /* Tokyo Night primary text */
+  border-bottom: 1px solid #414868; /* Tokyo Night border */
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+}
+
+.pii-result-item {
+  background-color: #1a1b26; /* Tokyo Night main background */
+  border: 1px solid #414868; /* Tokyo Night border */
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+  transition: all 0.3s ease;
+}
+
+.pii-result-item:hover {
+  border-color: #7aa2f7; /* Tokyo Night blue accent */
+  box-shadow: 0 2px 8px rgba(122, 162, 247, 0.2);
+}
+
+.pii-result-text {
+  color: #a9b1d6; /* Tokyo Night primary text */
+  line-height: 1.6;
+}
+
+.pii-result-link {
+  color: #7aa2f7; /* Tokyo Night blue accent */
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.pii-result-link:hover {
+  color: #89b4fa; /* Lighter blue on hover */
+  text-decoration: underline;
+}
+
+.pii-status-indicator {
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.pii-status-exposed {
+  background-color: rgba(247, 118, 142, 0.2); /* Tokyo Night red background */
+  color: #f7768e; /* Tokyo Night red accent */
+  border: 1px solid rgba(247, 118, 142, 0.4);
+}
+
+.pii-status-safe {
+  background-color: rgba(158, 206, 106, 0.2); /* Tokyo Night green background */
+  color: #9ece6a; /* Tokyo Night green accent */
+  border: 1px solid rgba(158, 206, 106, 0.4);
+}
+
+.pii-status-unknown {
+  background-color: rgba(224, 175, 104, 0.2); /* Tokyo Night orange background */
+  color: #e0af68; /* Tokyo Night orange accent */
+  border: 1px solid rgba(224, 175, 104, 0.4);
+}

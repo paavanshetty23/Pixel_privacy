@@ -4,7 +4,7 @@
   align-items: center;
   min-height: calc(100vh - 100px);
   padding: 40px 20px;
-  background-color: #0a192f;
+  background-color: #1a1b26; /* Tokyo Night main background */
 }
 
 .logo-container {
@@ -21,7 +21,7 @@
 }
 
 .title-text {
-  color: #3B82F6;
+  color: #7aa2f7; /* Tokyo Night blue accent */
   font-size: 2.8rem;
   font-weight: 600;
   margin: 0;
@@ -31,15 +31,15 @@
   max-width: 1000px;
   width: 100%;
   padding: 40px;
-  background: rgba(15, 23, 42, 0.7);
+  background: rgba(36, 40, 59, 0.7); /* Tokyo Night surface background */
   backdrop-filter: blur(10px);
   border-radius: 16px;
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(65, 72, 104, 0.3); /* Tokyo Night border */
 }
 
 .desc-text {
-  color: #e2e8f0;
+  color: #a9b1d6; /* Tokyo Night primary text */
   font-size: 1.1rem;
   line-height: 1.7;
   margin-bottom: 24px;
@@ -51,18 +51,18 @@
 }
 
 .desc-text b {
-  color: #3B82F6;
+  color: #7aa2f7; /* Tokyo Night blue accent */
   font-weight: 600;
 }
 
 .desc-text a {
-  color: #60a5fa;
+  color: #89b4fa; /* Tokyo Night lighter blue */
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
 .desc-text a:hover {
-  color: #93c5fd;
+  color: #b4befe; /* Even lighter blue on hover */
   text-decoration: none;
 }
 
@@ -76,7 +76,7 @@
 
 .title-with-logo h1 {
   margin: 0;
-  color: #60a5fa;
+  color: #89b4fa; /* Tokyo Night lighter blue */
   font-size: 3rem;
   font-weight: 600;
   letter-spacing: -0.025em;

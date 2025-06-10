@@ -1,67 +1,67 @@
-/* Modern Bootstrap Dark Theme Overrides */
+/* Modern Bootstrap Tokyo Night Theme Overrides */
 
 /* Card styling */
 .card {
-  background-color: #000000 !important;
-  border: 2px solid #ffffff !important;
-  box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1) !important;
+  background-color: #24283b !important; /* Tokyo Night surface background */
+  border: 1px solid #414868 !important; /* Tokyo Night border */
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3) !important;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 12px 30px rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4) !important;
 }
 
 .card-header {
-  background-color: #000000 !important;
-  border-bottom: 2px solid #ffffff !important;
-  color: #ffffff !important;
+  background-color: #16161e !important; /* Tokyo Night darker background */
+  border-bottom: 1px solid #414868 !important; /* Tokyo Night border */
+  color: #a9b1d6 !important; /* Tokyo Night primary text */
 }
 
 .card-body {
-  background-color: #000000 !important;
-  color: #ffffff !important;
+  background-color: #24283b !important; /* Tokyo Night surface background */
+  color: #a9b1d6 !important; /* Tokyo Night primary text */
 }
 
 /* Form controls */
 .form-control, .form-select {
-  background-color: #000000 !important;
-  border: 2px solid #ffffff !important;
-  color: #ffffff !important;
+  background-color: #1a1b26 !important; /* Tokyo Night main background */
+  border: 1px solid #414868 !important; /* Tokyo Night border */
+  color: #a9b1d6 !important; /* Tokyo Night primary text */
   transition: all 0.3s ease;
 }
 
 .form-control:focus, .form-select:focus {
-  background-color: #000000 !important;
-  border-color: #ffffff !important;
-  box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.25) !important;
-  color: #ffffff !important;
+  background-color: #1a1b26 !important; /* Tokyo Night main background */
+  border-color: #7aa2f7 !important; /* Tokyo Night blue accent */
+  box-shadow: 0 0 0 0.25rem rgba(122, 162, 247, 0.25) !important;
+  color: #a9b1d6 !important; /* Tokyo Night primary text */
 }
 
 .form-control::placeholder {
-  color: #cccccc !important;
+  color: #565f89 !important; /* Tokyo Night muted text */
 }
 
 /* Buttons */
 .btn-outline-light {
-  border: 2px solid #ffffff !important;
-  color: #ffffff !important;
+  border: 1px solid #7aa2f7 !important; /* Tokyo Night blue accent */
+  color: #7aa2f7 !important; /* Tokyo Night blue accent */
   background-color: transparent !important;
   transition: all 0.3s ease;
 }
 
 .btn-outline-light:hover {
-  background-color: #ffffff !important;
-  color: #000000 !important;
+  background-color: #7aa2f7 !important; /* Tokyo Night blue accent */
+  color: #1a1b26 !important; /* Tokyo Night dark background for contrast */
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 15px rgba(122, 162, 247, 0.3);
 }
 
 /* Navigation */
 .nav-link {
   background: transparent !important;
-  border: 2px solid transparent !important;
+  border: 1px solid transparent !important;
   border-radius: 8px !important;
   margin: 0 5px !important;
   padding: 8px 16px !important;
@@ -69,46 +69,46 @@
 }
 
 .nav-link:not(.active) {
-  color: #ffffff !important;
+  color: #a9b1d6 !important; /* Tokyo Night primary text */
 }
 
 .nav-link:not(.active):hover {
-  background-color: rgba(255, 255, 255, 0.1) !important;
-  border-color: #ffffff !important;
+  background-color: rgba(122, 162, 247, 0.1) !important;
+  border-color: #7aa2f7 !important; /* Tokyo Night blue accent */
   transform: translateY(-2px) !important;
 }
 
 .nav-link.active {
-  background-color: #ffffff !important;
-  border-color: #ffffff !important;
-  color: #000000 !important;
+  background-color: #7aa2f7 !important; /* Tokyo Night blue accent */
+  border-color: #7aa2f7 !important;
+  color: #1a1b26 !important; /* Tokyo Night dark background for contrast */
 }
 
 /* Alerts */
 .alert {
-  border: 2px solid #ffffff !important;
+  border: 1px solid #414868 !important; /* Tokyo Night border */
   border-radius: 12px !important;
 }
 
 .alert-warning {
-  background-color: rgba(255, 193, 7, 0.1) !important;
-  color: #ffffff !important;
+  background-color: rgba(224, 175, 104, 0.1) !important; /* Tokyo Night warning background */
+  color: #e0af68 !important; /* Tokyo Night warning text */
 }
 
 .alert-success {
-  background-color: rgba(25, 135, 84, 0.1) !important;
-  color: #ffffff !important;
+  background-color: rgba(158, 206, 106, 0.1) !important; /* Tokyo Night success background */
+  color: #9ece6a !important; /* Tokyo Night success text */
 }
 
 /* Badges */
 .badge {
-  border: 1px solid #ffffff !important;
+  border: 1px solid #414868 !important; /* Tokyo Night border */
   font-size: 0.9em !important;
 }
 
 /* Spinners */
 .spinner-border {
-  border-color: #ffffff !important;
+  border-color: #7aa2f7 !important; /* Tokyo Night blue accent */
   border-right-color: transparent !important;
 }
 
@@ -135,7 +135,7 @@
 
 /* Gradient text effects */
 .gradient-text {
-  background: linear-gradient(45deg, #ffffff, #cccccc);
+  background: linear-gradient(45deg, #7aa2f7, #bb9af7); /* Tokyo Night gradient */
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -162,8 +162,8 @@
 
 /* Custom result cards */
 .result-card {
-  background-color: #000000 !important;
-  border: 2px solid #ffffff !important;
+  background-color: #24283b !important; /* Tokyo Night surface background */
+  border: 1px solid #414868 !important; /* Tokyo Night border */
   border-radius: 12px !important;
   padding: 20px !important;
   margin-bottom: 20px !important;
@@ -172,20 +172,20 @@
 
 .result-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3) !important;
 }
 
 /* Risk indicators */
 .risk-indicator {
-  background: linear-gradient(135deg, #000000 0%, #333333 100%) !important;
-  border: 2px solid #ffffff !important;
+  background: linear-gradient(135deg, #24283b 0%, #16161e 100%) !important; /* Tokyo Night gradient */
+  border: 1px solid #414868 !important; /* Tokyo Night border */
   border-radius: 12px !important;
   padding: 20px !important;
 }
 
 .risk-meter-container {
-  background-color: #333333 !important;
-  border: 1px solid #ffffff !important;
+  background-color: #16161e !important; /* Tokyo Night darker background */
+  border: 1px solid #414868 !important; /* Tokyo Night border */
   border-radius: 8px !important;
   height: 8px !important;
   overflow: hidden !important;
@@ -220,5 +220,5 @@ a:hover {
 /* Navbar styling */
 .navbar {
   backdrop-filter: blur(10px) !important;
-  box-shadow: 0 2px 10px rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3) !important;
 }
