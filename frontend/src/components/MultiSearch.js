@@ -31,13 +31,7 @@ function MultiSearch() {
       if (!query.piiType || !query.piiValue) continue;
 
       try {
-        const response = await axios.get('http://localhost:5040/api/get-exposed-websites', {
-          params: {
-            name: `Multi-Search-${query.piiType}`,
-            'pii-type': query.piiType,
-            'pii-value': query.piiValue
-          }
-        });
+        const response = await axios.get(`http://localhost:5040/api/get-exposed-websites?name=Multi-Search-${query.piiType}&pii-type=${query.piiType}&pii-value=${query.piiValue}`);
 
         const data = response.data;
         if (data && data.neighbors) {
@@ -88,7 +82,7 @@ function MultiSearch() {
                         <option value="PASSPORT">🛂 Passport</option>
                       </select>
                     </div>
-                    
+
                     <div className="col-md-5">
                       <label className="form-label text-white">
                         <i className="bi bi-key me-2"></i>
@@ -101,18 +95,18 @@ function MultiSearch() {
                         onChange={e => handleQueryChange(index, 'piiValue', e.target.value)}
                         placeholder={
                           query.piiType === 'AADHAR' ? 'Enter Aadhar Number' :
-                          query.piiType === 'PAN' ? 'Enter PAN Number' :
-                          query.piiType === 'PASSPORT' ? 'Enter Passport ID' :
-                          'Enter PII value'
+                            query.piiType === 'PAN' ? 'Enter PAN Number' :
+                              query.piiType === 'PASSPORT' ? 'Enter Passport ID' :
+                                'Enter PII value'
                         }
                         required
                       />
                     </div>
-                    
+
                     <div className="col-md-2 d-flex align-items-end">
                       {searchQueries.length > 1 && (
-                        <button 
-                          type="button" 
+                        <button
+                          type="button"
                           onClick={() => removeQueryField(index)}
                           className="btn btn-outline-danger btn-sm w-100"
                         >
@@ -123,19 +117,19 @@ function MultiSearch() {
                     </div>
                   </div>
                 ))}
-                
+
                 <div className="d-flex gap-2 mb-4">
-                  <button 
-                    type="button" 
+                  <button
+                    type="button"
                     onClick={addQueryField}
                     className="btn btn-outline-secondary"
                   >
                     <i className="bi bi-plus-circle me-2"></i>
                     Add Another PII
                   </button>
-                  
-                  <button 
-                    type="submit" 
+
+                  <button
+                    type="submit"
                     disabled={isLoading}
                     className="btn btn-outline-light btn-lg flex-grow-1"
                   >
@@ -192,9 +186,9 @@ function MultiSearch() {
                                   </div>
                                   <div className="col-md-6">
                                     <strong className="text-white">Website:</strong>
-                                    <a 
-                                      href={item.website && item.website.startsWith('http') ? item.website : `https://${item.website || ''}`} 
-                                      target="_blank" 
+                                    <a
+                                      href={item.website && item.website.startsWith('http') ? item.website : `https://${item.website || ''}`}
+                                      target="_blank"
                                       rel="noopener noreferrer"
                                       className="btn btn-outline-light btn-sm ms-2"
                                     >

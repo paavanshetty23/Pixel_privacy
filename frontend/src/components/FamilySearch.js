@@ -27,34 +27,28 @@ function FamilySearch() {
       if (!member.name || !member.type || !member.value) continue;
 
       try {
-        const response = await axios.get('http://localhost:5040/api/get-exposed-websites', {
-          params: {
-            name: member.name,
-            'pii-type': member.type,
-            'pii-value': member.value
-          }
-        });
+        const response = await axios.get(`http://localhost:5040/api/get-exposed-websites?name=${member.name}&pii-type=${member.type}&pii-value=${member.value}`);
 
         const data = response.data;
         if (data && data.neighbors) {
-          allResults.push({ 
-            member: member.name, 
-            query: data.query, 
-            websites: data.neighbors 
+          allResults.push({
+            member: member.name,
+            query: data.query,
+            websites: data.neighbors
           });
         } else {
-          allResults.push({ 
-            member: member.name, 
-            query: `${member.type} ${member.value}`, 
-            websites: [] 
+          allResults.push({
+            member: member.name,
+            query: `${member.type} ${member.value}`,
+            websites: []
           });
         }
       } catch (error) {
         console.error(`Error searching for ${member.name}:`, error);
-        allResults.push({ 
-          member: member.name, 
-          query: `${member.type} ${member.value}`, 
-          error: error.message 
+        allResults.push({
+          member: member.name,
+          query: `${member.type} ${member.value}`,
+          error: error.message
         });
       }
     }
@@ -109,7 +103,7 @@ function FamilySearch() {
                             required
                           />
                         </div>
-                        
+
                         <div className="col-md-6">
                           <label className="form-label text-white">
                             <i className="bi bi-shield-exclamation me-2"></i>
@@ -130,7 +124,7 @@ function FamilySearch() {
                             <option value="PASSPORT">🛂 Passport</option>
                           </select>
                         </div>
-                        
+
                         <div className="col-md-6">
                           <label className="form-label text-white">
                             <i className="bi bi-key me-2"></i>
@@ -143,9 +137,9 @@ function FamilySearch() {
                             onChange={e => handleChange(idx, 'value', e.target.value)}
                             placeholder={
                               member.type === 'AADHAR' ? 'Enter Aadhar Number (e.g., 1234 5678 9012)' :
-                              member.type === 'PAN' ? 'Enter PAN Number (e.g., ABCDE1234F)' :
-                              member.type === 'PASSPORT' ? 'Enter Passport ID (e.g., A-1234567)' :
-                              'Enter PII value'
+                                member.type === 'PAN' ? 'Enter PAN Number (e.g., ABCDE1234F)' :
+                                  member.type === 'PASSPORT' ? 'Enter Passport ID (e.g., A-1234567)' :
+                                    'Enter PII value'
                             }
                             required
                           />
@@ -154,7 +148,7 @@ function FamilySearch() {
                     </div>
                   </div>
                 ))}
-                
+
                 <div className="row mb-4">
                   <div className="col-md-6">
                     <button
@@ -167,9 +161,9 @@ function FamilySearch() {
                     </button>
                   </div>
                   <div className="col-md-6 text-end">
-                    <button 
-                      type="submit" 
-                      disabled={isLoading} 
+                    <button
+                      type="submit"
+                      disabled={isLoading}
                       className="btn btn-outline-light btn-lg"
                     >
                       {isLoading ? (
@@ -226,7 +220,7 @@ function FamilySearch() {
                               {result.websites.length} Exposure(s) Found
                             </h6>
                           </div>
-                          
+
                           {result.websites.map((item, itemIdx) => (
                             <div key={itemIdx} className="card bg-dark border-warning mb-3">
                               <div className="card-header bg-dark border-warning d-flex justify-content-between align-items-center">
@@ -234,7 +228,7 @@ function FamilySearch() {
                                   {item.pii_type || 'Unknown'}
                                 </span>
                                 <span className="text-white-50">
-                                  Match Score: <strong className="text-white">{item.distance ? ((1 - item.distance) * 100).toFixed(2) : 'N/A'}%</strong>
+                                  Distance Score: <strong className="text-white">{item.distance ? item.distance.toFixed(2) : 0}</strong>
                                 </span>
                               </div>
                               <div className="card-body">
@@ -248,9 +242,9 @@ function FamilySearch() {
                                   <div className="col-md-6">
                                     <p className="text-white mb-2">
                                       <strong>Website:</strong><br />
-                                      <a 
-                                        href={item.website && item.website.startsWith('http') ? item.website : `https://${item.website || ''}`} 
-                                        target="_blank" 
+                                      <a
+                                        href={item.website && item.website.startsWith('http') ? item.website : `https://${item.website || ''}`}
+                                        target="_blank"
                                         rel="noopener noreferrer"
                                         className="btn btn-outline-light btn-sm"
                                       >
@@ -282,7 +276,7 @@ function FamilySearch() {
                     </div>
                   </div>
                 ))}
-                
+
                 <div className="card bg-dark border-info mt-4">
                   <div className="card-header bg-dark border-info">
                     <h5 className="text-white mb-0">

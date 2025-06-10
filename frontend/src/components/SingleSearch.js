@@ -17,16 +17,10 @@ function SingleSearch() {
     e.preventDefault();
     setIsLoading(true);
     setSearchAttempted(true);
-    
+
     try {
       // Make GET request with query parameters
-      const response = await axios.get('http://localhost:5040/api/get-exposed-websites', {
-        params: {
-          name: name,
-          'pii-type': piiType,
-          'pii-value': piiValue
-        }
-      });
+      const response = await axios.get(`http://localhost:5040/api/get-exposed-websites?name=${name}&pii-type=${piiType}&pii-value=${piiValue}`);
 
       const data = response.data;
       setSearchResults(data);
@@ -74,7 +68,7 @@ function SingleSearch() {
                       required
                     />
                   </div>
-                  
+
                   <div className="col-md-6">
                     <label className="form-label text-white">
                       <i className="bi bi-shield-exclamation me-2"></i>
@@ -95,7 +89,7 @@ function SingleSearch() {
                       <option value="PASSPORT">🛂 Passport</option>
                     </select>
                   </div>
-                  
+
                   <div className="col-md-6">
                     <label className="form-label text-white">
                       <i className="bi bi-key me-2"></i>
@@ -108,19 +102,19 @@ function SingleSearch() {
                       onChange={handlePiiValueChange}
                       placeholder={
                         piiType === 'AADHAR' ? 'Enter Aadhar Number (e.g., 1234 5678 9012)' :
-                        piiType === 'PAN' ? 'Enter PAN Number (e.g., ABCDE1234F)' :
-                        piiType === 'PASSPORT' ? 'Enter Passport ID (e.g., A-1234567)' :
-                        'Enter PII value'
+                          piiType === 'PAN' ? 'Enter PAN Number (e.g., ABCDE1234F)' :
+                            piiType === 'PASSPORT' ? 'Enter Passport ID (e.g., A-1234567)' :
+                              'Enter PII value'
                       }
                       required
                     />
                   </div>
                 </div>
-                
+
                 <div className="d-grid gap-2 mt-4">
-                  <button 
-                    type="submit" 
-                    disabled={isLoading} 
+                  <button
+                    type="submit"
+                    disabled={isLoading}
                     className="btn btn-outline-light btn-lg"
                   >
                     {isLoading ? (
@@ -174,7 +168,7 @@ function SingleSearch() {
           </div>
         </div>
       )}
-        
+
       {searchResults && (
         <div className="row">
           <div className="col-md-10 mx-auto">
@@ -196,7 +190,7 @@ function SingleSearch() {
                     <span className="badge bg-secondary ms-2">{name}</span>
                   </div>
                 </div>
-          
+
                 {searchResults.neighbors && searchResults.neighbors.length > 0 ? (
                   <div className="results-container">
                     <div className="row mb-4">
@@ -212,7 +206,7 @@ function SingleSearch() {
                         <RiskIndicator count={searchResults.neighbors.length} />
                       </div>
                     </div>
-                    
+
                     {searchResults.neighbors.map((item, idx) => (
                       <div key={idx} className="card bg-dark border-warning mb-3">
                         <div className="card-header bg-dark border-warning d-flex justify-content-between align-items-center">
@@ -220,7 +214,7 @@ function SingleSearch() {
                             {item.pii_type || 'Unknown'}
                           </span>
                           <span className="text-white-50">
-                            Match Score: <strong className="text-white">{item.distance ? ((1 - item.distance) * 100).toFixed(2) : 'N/A'}%</strong>
+                            Distance Score: <strong className="text-white">{item.distance ? item.distance.toFixed(2) : 0}</strong>
                           </span>
                         </div>
                         <div className="card-body">
@@ -234,9 +228,9 @@ function SingleSearch() {
                             <div className="col-md-6">
                               <p className="text-white mb-2">
                                 <strong>Website:</strong><br />
-                                <a 
-                                  href={item.website && item.website.startsWith('http') ? item.website : `https://${item.website || ''}`} 
-                                  target="_blank" 
+                                <a
+                                  href={item.website && item.website.startsWith('http') ? item.website : `https://${item.website || ''}`}
+                                  target="_blank"
                                   rel="noopener noreferrer"
                                   className="btn btn-outline-light btn-sm"
                                 >
@@ -252,7 +246,7 @@ function SingleSearch() {
                         </div>
                       </div>
                     ))}
-                    
+
                     <div className="card bg-dark border-info mt-4">
                       <div className="card-header bg-dark border-info">
                         <h5 className="text-white mb-0">
@@ -272,7 +266,7 @@ function SingleSearch() {
                   </div>
                 ) : (
                   <div className="text-center py-5">
-                    <div className="text-success mb-3" style={{fontSize: '4rem'}}>
+                    <div className="text-success mb-3" style={{ fontSize: '4rem' }}>
                       <i className="bi bi-check-circle"></i>
                     </div>
                     <h4 className="text-white">Great news! No exposed PII found.</h4>
@@ -292,7 +286,7 @@ function RiskIndicator({ count }) {
   let riskLevel = "Low";
   let riskColor = "#28a745";
   let riskIcon = "bi-check-circle";
-  
+
   if (count === 0) {
     riskLevel = "None";
     riskColor = "#28a745";
@@ -306,16 +300,16 @@ function RiskIndicator({ count }) {
     riskColor = "#dc3545";
     riskIcon = "bi-exclamation-octagon";
   }
-  
+
   const riskPercentage = count === 0 ? 0 : count <= 2 ? 50 : 100;
-  
+
   return (
     <div className="card bg-dark border-light">
       <div className="card-body text-center">
         <h6 className="text-white">Risk Level</h6>
-        <div className="progress mb-3" style={{height: '8px'}}>
-          <div 
-            className="progress-bar" 
+        <div className="progress mb-3" style={{ height: '8px' }}>
+          <div
+            className="progress-bar"
             style={{ width: `${riskPercentage}%`, backgroundColor: riskColor }}
           ></div>
         </div>

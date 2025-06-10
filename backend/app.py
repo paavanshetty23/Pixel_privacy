@@ -5,6 +5,7 @@ import requests
 from io import BytesIO
 from datetime import datetime
 from flask import Flask, request, jsonify
+from flask_cors import CORS, cross_origin
 from apscheduler.schedulers.background import BackgroundScheduler
 import chromadb
 from chromadb.config import Settings
@@ -29,6 +30,9 @@ else:
 
 # Initialize Flask
 app = Flask(__name__)
+cors = CORS(app) # allow CORS for all domains on all routes.
+app.config['CORS_HEADERS'] = 'Content-Type'
+
 
 # Constants
 WEBSITE_LIST_FILE = 'malicious_websites.list'
@@ -185,6 +189,7 @@ def schedule_scraping():
     scrape_and_store()
 
 @app.route('/api/get-exposed-websites', methods=['GET'])
+@cross_origin()
 def get_exposed_websites():
     name = request.args.get('name')
     pii_type = request.args.get('pii-type')
@@ -198,6 +203,8 @@ def get_exposed_websites():
     results = collection.query(query_embeddings=[query_emb], n_results=5)
     neighbors = []
     for m, d in zip(results['metadatas'][0], results['distances'][0]):
+        if m.get("pii_type", "") != pii_type:
+            continue
         neighbors.append({
             'data': m['data'],
             'pii_type': m.get('pii_type'),
