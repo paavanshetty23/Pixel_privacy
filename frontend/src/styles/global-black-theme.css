@@ -1,0 +1,86 @@
+/* Global Black Theme Override */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #000000 !important;
+  color: #FFFFFF !important;
+}
+
+/* Form elements */
+input, select, textarea {
+  background-color: #000000 !important;
+  color: #FFFFFF !important;
+  border: 2px solid #FFFFFF !important;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: 2px solid #FFFFFF;
+  outline-offset: 2px;
+}
+
+/* Buttons */
+button {
+  background-color: #000000 !important;
+  color: #FFFFFF !important;
+  border: 2px solid #FFFFFF !important;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+button:hover {
+  background-color: #FFFFFF !important;
+  color: #000000 !important;
+}
+
+/* Links */
+a {
+  color: #FFFFFF !important;
+  border-bottom: 1px solid #FFFFFF;
+  text-decoration: none;
+}
+
+a:hover {
+  background-color: #FFFFFF;
+  color: #000000 !important;
+  padding: 2px 4px;
+  border-radius: 3px;
+  border-bottom: none;
+}
+
+/* All text elements */
+h1, h2, h3, h4, h5, h6, p, span, div, li, label {
+  color: #FFFFFF !important;
+}
+
+/* Containers and boxes */
+.container, .card, .box, [class*="box"], [class*="container"] {
+  background-color: #000000 !important;
+  border: 2px solid #FFFFFF !important;
+}
+
+/* Override any other background colors */
+[class*="bg-"], [style*="background"] {
+  background-color: #000000 !important;
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #000000;
+  border: 1px solid #FFFFFF;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #FFFFFF;
+  border: 1px solid #000000;
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #CCCCCC;
+}

@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import '../styles/SearchResults.css'; // Import the CSS file
+import axios from 'axios';
 
 function FamilySearch() {
-  const [piiType, setPiiType] = useState('');
-  const [piiValue, setPiiValue] = useState('');
-  const [websites, setWebsites] = useState([]);
   const [members, setMembers] = useState([{ name: '', type: '', value: '' }]);
+  const [results, setResults] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [searchAttempted, setSearchAttempted] = useState(false);
 
   const handleChange = (idx, field, val) => {
     const newMembers = [...members];
@@ -18,78 +18,293 @@ function FamilySearch() {
 
   const handleSearch = async (e) => {
     e.preventDefault();
-    try {
-      const response = await fetch('/api/search_family_pii', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ piiType, piiValue }),
-      });
+    setIsLoading(true);
+    setSearchAttempted(true);
+    setResults([]);
+    const allResults = [];
 
-      if (!response.ok) {
-        console.error('Backend search failed:', response.status, response.statusText);
-        setWebsites([]);
-        return;
-      }
+    for (const member of members) {
+      if (!member.name || !member.type || !member.value) continue;
 
-      const data = await response.json();
-      if (data && data.neighbors) {
-        setWebsites(data.neighbors);
-      } else {
-        setWebsites([]);
-        console.log('No neighbors found or unexpected response structure:', data);
+      try {
+        const response = await axios.get('http://localhost:5040/api/get-exposed-websites', {
+          params: {
+            name: member.name,
+            'pii-type': member.type,
+            'pii-value': member.value
+          }
+        });
+
+        const data = response.data;
+        if (data && data.neighbors) {
+          allResults.push({ 
+            member: member.name, 
+            query: data.query, 
+            websites: data.neighbors 
+          });
+        } else {
+          allResults.push({ 
+            member: member.name, 
+            query: `${member.type} ${member.value}`, 
+            websites: [] 
+          });
+        }
+      } catch (error) {
+        console.error(`Error searching for ${member.name}:`, error);
+        allResults.push({ 
+          member: member.name, 
+          query: `${member.type} ${member.value}`, 
+          error: error.message 
+        });
       }
-    } catch (error) {
-      console.error('Error during PII search:', error);
-      setWebsites([]);
     }
-  };
 
+    setResults(allResults);
+    setIsLoading(false);
+  };
   return (
-    <div className="pii-search-container">
-      <form className="pii-form" onSubmit={handleSearch}>
-        <div>
-          <label><b>Type of PII</b></label>
-          <select value={piiType} onChange={e => setPiiType(e.target.value)} required>
-            <option value="">Select</option>
-            <option value="Aadhar Number">Aadhar</option>
-            <option value="PAN Number">PAN</option>
-            <option value="Passport ID">Passport</option>
-            <option value="PII value">Other</option>
-          </select>
-        </div>
-        <div>
-          <label><b>{piiType ? piiType : 'PII Value'}</b></label>
-          <input
-            type="text"
-            value={piiValue}
-            onChange={e => setPiiValue(e.target.value)}
-            placeholder={
-              piiType === 'Aadhar Number' ? 'Enter Aadhar Number' :
-              piiType === 'PAN Number' ? 'Enter PAN Number' :
-              piiType === 'Passport ID' ? 'Enter Passport ID' :
-              'Enter PII value'
-            }
-            required
-          />
-        </div>
-        <button type="submit">Search Family PII</button>
-        {websites.length > 0 ? (
-          <div className="result-box">
-            <h3>Exposed Websites:</h3>
-            <ul className="exposed-list">
-              {websites.map((site, idx) => (
-                <li key={idx} className="exposed-list-item">
-                  <a href={site} target="_blank" rel="noopener noreferrer" className="exposed-link">{site}</a>
-                </li>
-              ))}
-            </ul>
+    <div className="container-fluid">
+      <div className="row">
+        <div className="col-md-10 mx-auto">
+          <div className="card bg-dark border-light mb-4">
+            <div className="card-header bg-dark border-light">
+              <h4 className="text-white mb-0">
+                <i className="bi bi-people me-2"></i>
+                Family PII Exposure Search
+              </h4>
+              <small className="text-white-50">Check if your family members' personal information is exposed online</small>
+            </div>
+            <div className="card-body">
+              <form onSubmit={handleSearch}>
+                {members.map((member, idx) => (
+                  <div key={idx} className="card bg-dark border-secondary mb-3">
+                    <div className="card-header bg-dark border-secondary d-flex justify-content-between align-items-center">
+                      <span className="text-white">
+                        <i className="bi bi-person me-2"></i>
+                        Family Member {idx + 1}
+                      </span>
+                      {members.length > 1 && (
+                        <button
+                          type="button"
+                          className="btn btn-outline-danger btn-sm"
+                          onClick={() => removeMember(idx)}
+                        >
+                          <i className="bi bi-trash"></i>
+                        </button>
+                      )}
+                    </div>
+                    <div className="card-body">
+                      <div className="row g-3">
+                        <div className="col-12">
+                          <label className="form-label text-white">
+                            <i className="bi bi-person-badge me-2"></i>
+                            Name
+                          </label>
+                          <input
+                            type="text"
+                            className="form-control bg-dark text-white border-light"
+                            value={member.name}
+                            onChange={e => handleChange(idx, 'name', e.target.value)}
+                            placeholder="Enter family member's name"
+                            required
+                          />
+                        </div>
+                        
+                        <div className="col-md-6">
+                          <label className="form-label text-white">
+                            <i className="bi bi-shield-exclamation me-2"></i>
+                            PII Type
+                          </label>
+                          <select
+                            className="form-select bg-dark text-white border-light"
+                            value={member.type}
+                            onChange={e => {
+                              handleChange(idx, 'type', e.target.value);
+                              handleChange(idx, 'value', '');
+                            }}
+                            required
+                          >
+                            <option value="">Select PII Type</option>
+                            <option value="AADHAR">🆔 Aadhar</option>
+                            <option value="PAN">📄 PAN</option>
+                            <option value="PASSPORT">🛂 Passport</option>
+                          </select>
+                        </div>
+                        
+                        <div className="col-md-6">
+                          <label className="form-label text-white">
+                            <i className="bi bi-key me-2"></i>
+                            {member.type || 'PII Value'}
+                          </label>
+                          <input
+                            type="text"
+                            className="form-control bg-dark text-white border-light"
+                            value={member.value}
+                            onChange={e => handleChange(idx, 'value', e.target.value)}
+                            placeholder={
+                              member.type === 'AADHAR' ? 'Enter Aadhar Number (e.g., 1234 5678 9012)' :
+                              member.type === 'PAN' ? 'Enter PAN Number (e.g., ABCDE1234F)' :
+                              member.type === 'PASSPORT' ? 'Enter Passport ID (e.g., A-1234567)' :
+                              'Enter PII value'
+                            }
+                            required
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                
+                <div className="row mb-4">
+                  <div className="col-md-6">
+                    <button
+                      type="button"
+                      className="btn btn-outline-secondary"
+                      onClick={addMember}
+                    >
+                      <i className="bi bi-plus-circle me-2"></i>
+                      Add Family Member
+                    </button>
+                  </div>
+                  <div className="col-md-6 text-end">
+                    <button 
+                      type="submit" 
+                      disabled={isLoading} 
+                      className="btn btn-outline-light btn-lg"
+                    >
+                      {isLoading ? (
+                        <>
+                          <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+                          Searching...
+                        </>
+                      ) : (
+                        <>
+                          <i className="bi bi-search me-2"></i>
+                          Search Family PII
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
           </div>
-        ) : (
-          <div className="no-websites-found">No exposed websites found for this query.</div>
-        )}
-      </form>
+        </div>
+      </div>
+
+      {searchAttempted && results.length > 0 && (
+        <div className="row">
+          <div className="col-md-10 mx-auto">
+            <div className="card bg-dark border-light">
+              <div className="card-header bg-dark border-light">
+                <h4 className="text-white mb-0">
+                  <i className="bi bi-clipboard-data me-2"></i>
+                  Family Search Results
+                </h4>
+              </div>
+              <div className="card-body">
+                {results.map((result, idx) => (
+                  <div key={idx} className="card bg-dark border-secondary mb-4">
+                    <div className="card-header bg-dark border-secondary">
+                      <h5 className="text-white mb-0">
+                        <i className="bi bi-person me-2"></i>
+                        {result.member}
+                      </h5>
+                      <small className="text-white-50">Query: {result.query}</small>
+                    </div>
+                    <div className="card-body">
+                      {result.error ? (
+                        <div className="alert alert-danger border-light">
+                          <i className="bi bi-exclamation-triangle me-2"></i>
+                          Error: {result.error}
+                        </div>
+                      ) : result.websites && result.websites.length > 0 ? (
+                        <div>
+                          <div className="alert alert-warning border-light mb-3">
+                            <h6 className="alert-heading">
+                              <i className="bi bi-exclamation-triangle me-2"></i>
+                              {result.websites.length} Exposure(s) Found
+                            </h6>
+                          </div>
+                          
+                          {result.websites.map((item, itemIdx) => (
+                            <div key={itemIdx} className="card bg-dark border-warning mb-3">
+                              <div className="card-header bg-dark border-warning d-flex justify-content-between align-items-center">
+                                <span className={`badge ${item.pii_type === 'AADHAR' ? 'bg-danger' : item.pii_type === 'PAN' ? 'bg-warning' : 'bg-info'}`}>
+                                  {item.pii_type || 'Unknown'}
+                                </span>
+                                <span className="text-white-50">
+                                  Match Score: <strong className="text-white">{item.distance ? ((1 - item.distance) * 100).toFixed(2) : 'N/A'}%</strong>
+                                </span>
+                              </div>
+                              <div className="card-body">
+                                <div className="row">
+                                  <div className="col-md-6">
+                                    <p className="text-white mb-2">
+                                      <strong>Exposed Data:</strong><br />
+                                      <span className="badge bg-danger">{item.data || 'N/A'}</span>
+                                    </p>
+                                  </div>
+                                  <div className="col-md-6">
+                                    <p className="text-white mb-2">
+                                      <strong>Website:</strong><br />
+                                      <a 
+                                        href={item.website && item.website.startsWith('http') ? item.website : `https://${item.website || ''}`} 
+                                        target="_blank" 
+                                        rel="noopener noreferrer"
+                                        className="btn btn-outline-light btn-sm"
+                                      >
+                                        <i className="bi bi-box-arrow-up-right me-1"></i>
+                                        {item.website || 'Unknown'}
+                                      </a>
+                                    </p>
+                                  </div>
+                                </div>
+                                <p className="text-white-50 mb-0">
+                                  <strong>Detected On:</strong> {item.timestamp ? new Date(item.timestamp).toLocaleDateString() : 'Unknown'}
+                                  {item.found_in_image && (
+                                    <span className="badge bg-info ms-2">Found in Image</span>
+                                  )}
+                                </p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="alert alert-success border-light">
+                          <h6 className="alert-heading">
+                            <i className="bi bi-check-circle me-2"></i>
+                            Good News!
+                          </h6>
+                          <p className="mb-0">No exposed PII found for {result.member}.</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+                
+                <div className="card bg-dark border-info mt-4">
+                  <div className="card-header bg-dark border-info">
+                    <h5 className="text-white mb-0">
+                      <i className="bi bi-lightbulb me-2"></i>
+                      Family Protection Recommendations
+                    </h5>
+                  </div>
+                  <div className="card-body">
+                    <ul className="text-white">
+                      <li className="mb-2">Educate family members about PII protection</li>
+                      <li className="mb-2">Regularly monitor family members' digital footprint</li>
+                      <li className="mb-2">Set up identity theft monitoring for the family</li>
+                      <li className="mb-2">Create strong, unique passwords for all family accounts</li>
+                      <li>Enable two-factor authentication for family members</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

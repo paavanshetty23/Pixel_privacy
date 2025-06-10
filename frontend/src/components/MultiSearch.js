@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import '../styles/SearchResults.css'; // Import the CSS file
+import axios from 'axios';
 
 function MultiSearch() {
   const [searchQueries, setSearchQueries] = useState([{ piiType: '', piiValue: '' }]);
-  const [results, setResults] = useState([]); // To store results for multiple queries
+  const [results, setResults] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleQueryChange = (index, field, value) => {
     const newQueries = [...searchQueries];
@@ -22,97 +23,204 @@ function MultiSearch() {
 
   const handleMultiSearch = async (e) => {
     e.preventDefault();
-    // You'll need to decide how to handle multiple API calls:
-    // 1. Send all queries in one request (if backend supports it)
-    // 2. Send multiple requests in parallel
-    setResults([]); // Clear previous results
+    setIsLoading(true);
+    setResults([]);
     const allResults = [];
 
     for (const query of searchQueries) {
-      if (!query.piiType || !query.piiValue) continue; // Skip empty queries
+      if (!query.piiType || !query.piiValue) continue;
 
       try {
-        const response = await fetch('/api/search_pii', { // Assuming same endpoint, or a new one for multi-search
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(query), // Send individual query object
+        const response = await axios.get('http://localhost:5040/api/get-exposed-websites', {
+          params: {
+            name: `Multi-Search-${query.piiType}`,
+            'pii-type': query.piiType,
+            'pii-value': query.piiValue
+          }
         });
 
-        if (!response.ok) {
-          console.error(`Backend search failed for query ${JSON.stringify(query)}:`, response.status, response.statusText);
-          allResults.push({ query, error: `HTTP error! status: ${response.status}` });
-          continue;
-        }
-
-        const data = await response.json();
+        const data = response.data;
         if (data && data.neighbors) {
           allResults.push({ query: data.query, websites: data.neighbors });
         } else {
-          allResults.push({ query: query.piiValue, websites: [], message: 'No neighbors found or unexpected response.' });
-          console.log(`No neighbors found for query ${query.piiValue} or unexpected response structure:`, data);
+          allResults.push({ query: `${query.piiType} ${query.piiValue}`, websites: [] });
         }
       } catch (error) {
-        console.error(`Error during PII search for query ${JSON.stringify(query)}:`, error);
-        allResults.push({ query, error: error.toString() });
+        console.error(`Error searching for ${query.piiType}: ${query.piiValue}`, error);
+        allResults.push({ query: `${query.piiType} ${query.piiValue}`, error: error.message });
       }
     }
+
     setResults(allResults);
+    setIsLoading(false);
   };
 
   return (
-    <div className="pii-search-container multi-search-container">
-      <form className="pii-form" onSubmit={handleMultiSearch}>
-        {searchQueries.map((query, index) => (
-          <div key={index} className="query-group">
-            <select value={query.piiType} onChange={e => handleQueryChange(index, 'piiType', e.target.value)} required>
-              <option value="">Select PII Type</option>
-              <option value="Aadhar Number">Aadhar</option>
-              <option value="PAN Number">PAN</option>
-              <option value="Passport ID">Passport</option>
-              <option value="PII value">Other</option>
-            </select>
-            <input
-              type="text"
-              value={query.piiValue}
-              onChange={e => handleQueryChange(index, 'piiValue', e.target.value)}
-              placeholder={`Enter ${query.piiType || 'PII'} Value`}
-              required
-            />
-            {searchQueries.length > 1 && (
-              <button type="button" onClick={() => removeQueryField(index)} className="remove-query-btn">
-                Remove
-              </button>
-            )}
+    <div className="container-fluid">
+      <div className="row">
+        <div className="col-md-10 mx-auto">
+          <div className="card bg-dark border-light mb-4">
+            <div className="card-header bg-dark border-light">
+              <h4 className="text-white mb-0">
+                <i className="bi bi-collection me-2"></i>
+                Multi PII Search
+              </h4>
+              <small className="text-white-50">Search for multiple PII entries at once</small>
+            </div>
+            <div className="card-body">
+              <form onSubmit={handleMultiSearch}>
+                {searchQueries.map((query, index) => (
+                  <div key={index} className="row g-3 mb-3 p-3 border border-light rounded">
+                    <div className="col-md-5">
+                      <label className="form-label text-white">
+                        <i className="bi bi-shield-exclamation me-2"></i>
+                        PII Type {index + 1}
+                      </label>
+                      <select
+                        className="form-select bg-dark text-white border-light"
+                        value={query.piiType}
+                        onChange={e => handleQueryChange(index, 'piiType', e.target.value)}
+                        required
+                      >
+                        <option value="">Select PII Type</option>
+                        <option value="AADHAR">🆔 Aadhar</option>
+                        <option value="PAN">📄 PAN</option>
+                        <option value="PASSPORT">🛂 Passport</option>
+                      </select>
+                    </div>
+                    
+                    <div className="col-md-5">
+                      <label className="form-label text-white">
+                        <i className="bi bi-key me-2"></i>
+                        {query.piiType || 'PII Value'} {index + 1}
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control bg-dark text-white border-light"
+                        value={query.piiValue}
+                        onChange={e => handleQueryChange(index, 'piiValue', e.target.value)}
+                        placeholder={
+                          query.piiType === 'AADHAR' ? 'Enter Aadhar Number' :
+                          query.piiType === 'PAN' ? 'Enter PAN Number' :
+                          query.piiType === 'PASSPORT' ? 'Enter Passport ID' :
+                          'Enter PII value'
+                        }
+                        required
+                      />
+                    </div>
+                    
+                    <div className="col-md-2 d-flex align-items-end">
+                      {searchQueries.length > 1 && (
+                        <button 
+                          type="button" 
+                          onClick={() => removeQueryField(index)}
+                          className="btn btn-outline-danger btn-sm w-100"
+                        >
+                          <i className="bi bi-trash me-1"></i>
+                          Remove
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+                
+                <div className="d-flex gap-2 mb-4">
+                  <button 
+                    type="button" 
+                    onClick={addQueryField}
+                    className="btn btn-outline-secondary"
+                  >
+                    <i className="bi bi-plus-circle me-2"></i>
+                    Add Another PII
+                  </button>
+                  
+                  <button 
+                    type="submit" 
+                    disabled={isLoading}
+                    className="btn btn-outline-light btn-lg flex-grow-1"
+                  >
+                    {isLoading ? (
+                      <>
+                        <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+                        Searching...
+                      </>
+                    ) : (
+                      <>
+                        <i className="bi bi-search me-2"></i>
+                        Search All PIIs
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
-        ))}
-        <button type="button" onClick={addQueryField} className="add-query-btn">Add another PII</button>
-        <button type="submit">Search All</button>
+        </div>
+      </div>
 
-        {results.length > 0 && (
-          <div className="multi-result-box">
-            <h3>Search Results:</h3>
-            {results.map((result, idx) => (
-              <div key={idx} className="result-item">
-                <h4 className="result-query-title">Query: {typeof result.query === 'object' ? `${result.query.piiType} - ${result.query.piiValue}` : result.query}</h4>
-                {result.error && <p className="error-message">Error: {result.error}</p>}
-                {result.websites && result.websites.length > 0 ? (
-                  <ul className="exposed-list">
-                    {result.websites.map((site, siteIdx) => (
-                      <li key={siteIdx} className="exposed-list-item">
-                        <a href={site} target="_blank" rel="noopener noreferrer" className="exposed-link">{site}</a>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  !result.error && <p className="no-results-message">No exposed websites found for this query.</p>
-                )}
+      {results.length > 0 && (
+        <div className="row">
+          <div className="col-md-10 mx-auto">
+            <div className="card bg-dark border-light">
+              <div className="card-header bg-dark border-light">
+                <h4 className="text-white mb-0">
+                  <i className="bi bi-clipboard-data me-2"></i>
+                  Multi-Search Results
+                </h4>
               </div>
-            ))}
+              <div className="card-body">
+                {results.map((result, idx) => (
+                  <div key={idx} className="card bg-dark border-warning mb-3">
+                    <div className="card-header bg-dark border-warning">
+                      <h5 className="text-white mb-0">Query: {result.query}</h5>
+                    </div>
+                    <div className="card-body">
+                      {result.error ? (
+                        <div className="alert alert-danger">
+                          <strong>Error:</strong> {result.error}
+                        </div>
+                      ) : result.websites && result.websites.length > 0 ? (
+                        <div>
+                          <h6 className="text-white mb-3">Found {result.websites.length} exposed instances:</h6>
+                          {result.websites.map((item, siteIdx) => (
+                            <div key={siteIdx} className="card bg-dark border-light mb-2">
+                              <div className="card-body">
+                                <div className="row">
+                                  <div className="col-md-6">
+                                    <strong className="text-white">Data:</strong>
+                                    <span className="badge bg-danger ms-2">{item.data || 'N/A'}</span>
+                                  </div>
+                                  <div className="col-md-6">
+                                    <strong className="text-white">Website:</strong>
+                                    <a 
+                                      href={item.website && item.website.startsWith('http') ? item.website : `https://${item.website || ''}`} 
+                                      target="_blank" 
+                                      rel="noopener noreferrer"
+                                      className="btn btn-outline-light btn-sm ms-2"
+                                    >
+                                      <i className="bi bi-box-arrow-up-right me-1"></i>
+                                      {item.website || 'Unknown'}
+                                    </a>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="alert alert-success">
+                          <i className="bi bi-check-circle me-2"></i>
+                          No exposed websites found for this query.
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
-        )}
-      </form>
+        </div>
+      )}
     </div>
   );
 }
