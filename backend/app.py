@@ -20,6 +20,13 @@ import shutil
 import pytesseract
 import cv2
 
+# Check for Tesseract executable availability
+if shutil.which('tesseract') is None:
+    print("[WARN] Tesseract executable not found in PATH. Image OCR disabled.")
+    IMAGE_OCR_AVAILABLE = False
+else:
+    IMAGE_OCR_AVAILABLE = True
+
 class PIIDetector:
     def __init__(self, website_list_file='malicious_websites.list'):
         self.website_list_file = website_list_file
@@ -37,6 +44,7 @@ class PIIDetector:
     def _load_glove_model(self):
         """Load GloVe model - can be mocked for testing"""
         try:
+            print("[INIT] Loading GloVe model...")
             return gensim_load("glove-wiki-gigaword-300")
         except Exception as e:
             print(f"[ERROR] Failed to load GloVe model: {e}")
@@ -45,10 +53,12 @@ class PIIDetector:
     def load_websites(self):
         """Load websites from file"""
         if not os.path.isfile(self.website_list_file):
+            print(f"[LOAD] Website list file '{self.website_list_file}' not found.")
             return []
         try:
             with open(self.website_list_file, 'r') as f:
                 sites = [line.strip() for line in f if line.strip()]
+            print(f"[LOAD] Loaded {len(sites)} websites from list.")
             return sites
         except Exception as e:
             print(f"[ERROR] Failed to load websites: {e}")
@@ -105,12 +115,120 @@ class PIIDetector:
         except Exception as e:
             print(f"[ERROR] Selenium rendering failed for {url}: {e}")
             return ""
+    
+    def scrape_and_store(self):
+        """Scrape each site for PII in text and images, store embeddings in ChromaDB."""
+        websites = self.load_websites()
+        for url in websites:
+            try:
+                print(f"[SCRAPE] Rendering {url}")
+                html = self.get_rendered_html(url)
+                if not html:
+                    continue
+                soup = BeautifulSoup(html, 'html.parser')
+                text_content = soup.get_text()
+                print(f"[SCRAPE] Success - {url} returned {len(text_content)} characters")
+
+                print("[DEBUG] Beginning regex search for known PII formats...")
+
+                # Text-based PII extraction
+                findings = {
+                    'AADHAR': set(self.AADHAR_REGEX.findall(text_content)),
+                    'PAN': set(self.PAN_REGEX.findall(text_content)),
+                    'PASSPORT': set(self.PASSPORT_REGEX.findall(text_content))
+                }
+                for pii_type, values in findings.items():
+                    for value in values:
+                        record_id = str(uuid.uuid4())
+                        embedding = self.embed_text(f"{pii_type} {value}")
+                        if np.linalg.norm(embedding) == 0:
+                            print(f"[SKIP] Zero vector for {pii_type}: {value}")
+                            continue
+                        metadata = {
+                            'data': value,
+                            'pii_type': pii_type,
+                            'website': url,
+                            'timestamp': datetime.utcnow().isoformat(),
+                            'found_in_image': False
+                        }
+                        print(f"[STORE] {pii_type}: {value} from {url}")
+                        self.collection.add(
+                            ids=[record_id],
+                            documents=[value],
+                            embeddings=[embedding],
+                            metadatas=[metadata]
+                        )
+
+                print("[DEBUG] Beginning regex search for known PII formats in images...")
+
+                # Image-based PII extraction
+                for img in soup.find_all('img'):
+                    src = img.get('src')
+                    if not src:
+                        continue
+                    img_url = src if src.startswith('http') else requests.compat.urljoin(url, src)
+                    try:
+                        resp = requests.get(img_url, timeout=10)
+                        print(f"[DEBUG] Got image from {img_url}")
+                        img_obj = Image.open(BytesIO(resp.content))
+
+                        # Multiple OCR techniques
+                        ocr_text1 = pytesseract.image_to_string(img_obj)
+
+                        enhanced = img_obj.resize((img_obj.width*2, img_obj.height*2), Image.BICUBIC)
+                        enhanced = enhanced.filter(ImageFilter.BLUR)
+                        ocr_text2 = pytesseract.image_to_string(enhanced)
+
+                        bw = enhanced.convert('L').point(lambda x: 0 if x < 128 else 255)
+                        ocr_text3 = pytesseract.image_to_string(bw)
+
+                        print(f"[DEBUG] Found \n{ocr_text1}\n and \n{ocr_text2}\n and \n{ocr_text3}\n in {img_url}")
+                        
+                        pii_dict = {
+                            'AADHAR': set(self.AADHAR_REGEX.findall(ocr_text1) + self.AADHAR_REGEX.findall(ocr_text2) + self.AADHAR_REGEX.findall(ocr_text3)),
+                            'PAN': set(self.PAN_REGEX.findall(ocr_text1) + self.PAN_REGEX.findall(ocr_text2) + self.PAN_REGEX.findall(ocr_text3)),
+                            'PASSPORT': set(self.PASSPORT_REGEX.findall(ocr_text1) + self.PASSPORT_REGEX.findall(ocr_text2) + self.PASSPORT_REGEX.findall(ocr_text3))
+                        }
+                        
+                        for pii_type, vals in pii_dict.items():
+                            for value in vals:
+                                record_id = str(uuid.uuid4())
+                                embedding = self.embed_text(f"{pii_type} {value}")
+                                if np.linalg.norm(embedding) == 0:
+                                    print(f"[SKIP] Zero vector for {pii_type}: {value} in image")
+                                    continue
+                                metadata = {
+                                    'data': value,
+                                    'pii_type': pii_type,
+                                    'website': url,
+                                    'timestamp': datetime.utcnow().isoformat(),
+                                    'found_in_image': True
+                                }
+                                print(f"[STORE] {pii_type}: {value} from {url} in {img_url}")
+                                self.collection.add(
+                                    ids=[record_id],
+                                    documents=[value],
+                                    embeddings=[embedding],
+                                    metadatas=[metadata]
+                                )
+                    except Exception as e:
+                        print(f"[ERROR] Image extraction failed for {img_url}: {e}")
+            except Exception as e:
+                print(f"[ERROR] Scraping failed for {url}: {e}")
+
+    def schedule_scraping(self):
+        """Schedule periodic scraping"""
+        scheduler = BackgroundScheduler()
+        scheduler.add_job(self.scrape_and_store, 'interval', hours=1, id='scrape_job', replace_existing=True)
+        scheduler.start()
+        self.scrape_and_store()  # Run once immediately
 
 # Flask app setup
 app = Flask(__name__)
-CORS(app)
+cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
+# Initialize detector
 detector = PIIDetector()
 
 @app.route('/api/get-exposed-websites', methods=['GET'])
@@ -150,4 +268,5 @@ def get_exposed_websites():
         return jsonify({'error': 'Database query failed'}), 500
 
 if __name__ == '__main__':
+    detector.schedule_scraping()
     app.run(host='0.0.0.0', port=5040)
