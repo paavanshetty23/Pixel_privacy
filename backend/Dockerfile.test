@@ -1,0 +1,38 @@
+FROM python:3.11
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    libsm6 \
+    libxext6 \
+    libxrender-dev \
+    libgomp1 \
+    chromium \
+    chromium-driver \
+    tesseract-ocr \
+    libtesseract-dev \
+    libjpeg-dev \
+    libpng-dev \
+    libgstreamer1.0-0 \
+    libgstreamer-plugins-base1.0-0 \
+    libgtk-3-0 \
+    libqt5gui5 \
+    libqt5webkit5 \
+    libqt5test5 \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN pip install --upgrade pip
+
+COPY ./requirements.txt ./test_requirements.txt ./
+RUN pip install -r requirements.txt -r test_requirements.txt
+
+RUN python -c "import gensim.downloader as api; api.load('glove-wiki-gigaword-300')"
+
+COPY . /app
+WORKDIR /app
+
+ENV DISPLAY=:99
+ENV QT_QPA_PLATFORM=offscreen
+
+CMD ["python", "-m", "pytest", "test_app.py", "-v"]

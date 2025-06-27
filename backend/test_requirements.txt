@@ -1,0 +1,14 @@
+pytest
+Flask
+flask_cors
+apscheduler
+chromadb
+numpy
+gensim
+beautifulsoup4
+selenium
+webdriver-manager
+chromedriver-autoinstaller
+pytesseract
+Pillow
+opencv-python

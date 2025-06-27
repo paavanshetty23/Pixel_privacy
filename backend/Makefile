@@ -9,6 +9,8 @@ else
     DETECTED_OS := Unix
     DOCKER_BUILD := docker build . -t pii-backend
     DOCKER_RUN := docker run --network host pii-backend
+HOST_UID := $(shell id -u)
+HOST_GID := $(shell id -g)
 endif
 
 all dev:
@@ -30,5 +32,9 @@ unix:
 # Clean up Docker images
 clean:
 	docker rmi pii-backend || true
+
+test:
+	docker build . -f Dockerfile.test -t pii-backend-test
+	docker run pii-backend-test
 
 .PHONY: all dev windows unix clean
